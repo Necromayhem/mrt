@@ -4,3 +4,11 @@
     font-family: "Roboto", sans-serif;
 }
 
+::-webkit-scrollbar {
+  display: none; 
+}
+
+html {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
