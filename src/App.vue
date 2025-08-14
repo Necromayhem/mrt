@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ContentMenuComponent from './components/content-menu/content-menu.component.vue';
 import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
 </script>
 
@@ -6,6 +7,7 @@ import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
   <div class="app-container">
     <div class="content">
     <NavMenuComponent />
+    <ContentMenuComponent />
   </div>
   </div>
 </template>
@@ -24,7 +26,5 @@ import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
   max-width: 744px;
   width: 100%;
   margin: 0 auto;
-  flex: 1;
-  overflow-y: auto;
 }
 </style>
