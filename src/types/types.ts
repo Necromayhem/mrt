@@ -1,5 +1,4 @@
-export type Users = [
-    {
+export type User = {
         id: number,
         name: string,
         username: string,
@@ -21,4 +20,5 @@ export type Users = [
             bs: string
         }
     }
-]
+
+export type Users = User[];
