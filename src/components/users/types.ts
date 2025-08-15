@@ -21,18 +21,4 @@ export type User = {
   }
 }
 
-export type Photo = {
-  id: number
-  title: string
-  url: string
-  thumbnailUrl: string
-}
-
-export type Album = {
-  userId: number
-  id: number
-  title: string
-}
-
 export type Users = User[]
-export type Albums = Album[]

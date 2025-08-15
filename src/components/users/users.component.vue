@@ -1,44 +1,23 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import type { Users } from '@/types/types';
-import OpenAccordionComponent from '../UI/open-accordion.component.vue';
-import CloseAccordionComponent from '../UI/close-accordion.component.vue';
-import AlbumsComponent from '../albums/albums.component.vue';
+import { ref } from 'vue'
+import { fetchUsers } from './api'
+import type { Users } from './types'
+import OpenAccordionComponent from '../UI/open-accordion.component.vue'
+import CloseAccordionComponent from '../UI/close-accordion.component.vue'
+import AlbumsComponent from '../albums/albums.component.vue'
 
 const props = defineProps<{
-  modelValue: number | null;
-}>();
+  modelValue: number | null
+}>()
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue'])
+const users = ref<Users | null>(null)
 
-const users = ref<Users | null>(null);
-
-async function fetchUsers(): Promise<void> {
-    try {
-        const response = await fetch('https://json.medrocket.ru/users/')
-        if(!response.ok){
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: Users = await response.json()
-        users.value = data
-    } catch (err: unknown) {
-        if(err instanceof Error){
-            console.error('Failed to fetch users:', err.message)
-        } else {
-            console.error('An unknown error occurred')
-        }
-    }
-}
+fetchUsers().then(data => users.value = data).catch(() => {})
 
 function toggleUser(userId: number): void {
-    if (props.modelValue === userId) {
-        emit('update:modelValue', null);
-    } else {
-        emit('update:modelValue', userId);
-    }
+  emit('update:modelValue', props.modelValue === userId ? null : userId)
 }
-
-fetchUsers();
 </script>
 
 <template>
@@ -86,6 +65,7 @@ fetchUsers();
     line-height: 1.3;
     font-weight: bold;
     cursor: pointer;
+    user-select: none;
 }
 
 .accordion__icon {

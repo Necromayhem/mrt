@@ -18,8 +18,8 @@ import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
     flex-direction: column;
     min-height: 100vh; 
     max-height: 100vh; 
-    overflow: hidden;
-    margin-top: 64px; 
+    overflow-y: auto;
+    padding-top: 64px; 
 }
 
 .content {
