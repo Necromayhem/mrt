@@ -5,6 +5,7 @@ import type { Albums } from './types'
 import OpenAccordionComponent from '../UI/open-accordion.component.vue'
 import CloseAccordionComponent from '../UI/close-accordion.component.vue'
 import PhotosComponent from '../photos/photos.component.vue'
+import LoaderComponent from '../UI/loader.component.vue' 
 
 const props = defineProps<{
   userId: number
@@ -12,10 +13,17 @@ const props = defineProps<{
 
 const albums = ref<Albums | null>(null)
 const expandedAlbumId = ref<number | null>(null)
+const isLoading = ref(false) 
 
 watch(() => props.userId, (newUserId) => {
   if (newUserId) {
-    fetchAlbums(newUserId).then(data => albums.value = data).catch(() => {})
+    isLoading.value = true 
+    fetchAlbums(newUserId)
+      .then(data => albums.value = data)
+      .catch(() => {})
+      .finally(() => {
+        isLoading.value = false 
+      })
     expandedAlbumId.value = null
   }
 }, { immediate: true })
@@ -26,31 +34,35 @@ function toggleAlbum(albumId: number): void {
 </script>
 
 <template>
-    <div class="albums-container">
-        <div
-            v-for="album in albums"
-            :key="album.id"
-            class="album-section"
+  <div class="albums-container">
+    <LoaderComponent v-if="isLoading" height="320px"  />
+    
+    <template v-else>
+      <div
+        v-for="album in albums"
+        :key="album.id"
+        class="album-section"
+      >
+        <div 
+          class="accordion__album"
+          :class="{'accordion__album--active': expandedAlbumId === album.id}"
+          @click="toggleAlbum(album.id)"
         >
-            <div 
-                class="accordion__album"
-                :class="{'accordion__album--active': expandedAlbumId === album.id}"
-                @click="toggleAlbum(album.id)"
-            >
-                <component 
-                    :is="expandedAlbumId === album.id ? CloseAccordionComponent : OpenAccordionComponent" 
-                    class="accordion__icon" 
-                />
-                {{ album.title }}
-            </div>
-            
-            <transition name="slide">
-                <div v-if="expandedAlbumId === album.id">
-                    <PhotosComponent :albumId="album.id" />
-                </div>
-            </transition>
+          <component 
+            :is="expandedAlbumId === album.id ? CloseAccordionComponent : OpenAccordionComponent" 
+            class="accordion__icon" 
+          />
+          {{ album.title }}
         </div>
-    </div>
+        
+        <transition name="slide">
+          <div v-if="expandedAlbumId === album.id">
+            <PhotosComponent :albumId="album.id" />
+          </div>
+        </transition>
+      </div>
+    </template>
+  </div>
 </template>
 
 <style scoped>
@@ -77,4 +89,5 @@ function toggleAlbum(albumId: number): void {
     max-height: 0;
     transform: translateY(-10px);
 }
+
 </style>

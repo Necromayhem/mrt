@@ -5,6 +5,7 @@ import type { Users } from './types'
 import OpenAccordionComponent from '../UI/open-accordion.component.vue'
 import CloseAccordionComponent from '../UI/close-accordion.component.vue'
 import AlbumsComponent from '../albums/albums.component.vue'
+import LoaderComponent from '../UI/loader.component.vue' 
 
 const props = defineProps<{
   modelValue: number | null
@@ -12,8 +13,16 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 const users = ref<Users | null>(null)
+const isLoading = ref(true) 
 
-fetchUsers().then(data => users.value = data).catch(() => {})
+fetchUsers()
+  .then(data => {
+    users.value = data
+  })
+  .catch(() => {})
+  .finally(() => {
+    isLoading.value = false
+  })
 
 function toggleUser(userId: number): void {
   emit('update:modelValue', props.modelValue === userId ? null : userId)
@@ -21,31 +30,35 @@ function toggleUser(userId: number): void {
 </script>
 
 <template>
-    <div class="accordion">
-        <div
-            v-for="user in users"
-            :key="user.id"
-            class="user-section"
+  <div class="accordion">
+    <LoaderComponent v-if="isLoading" height="888px"  />
+    
+    <template v-else>
+      <div
+        v-for="user in users"
+        :key="user.id"
+        class="user-section"
+      >
+        <div 
+          class="accordion__user"
+          :class="{'accordion__user--active': modelValue === user.id}"
+          @click="toggleUser(user.id)"
         >
-            <div 
-                class="accordion__user"
-                :class="{'accordion__user--active': modelValue === user.id}"
-                @click="toggleUser(user.id)"
-            >
-                <component 
-                    :is="modelValue === user.id ? CloseAccordionComponent : OpenAccordionComponent" 
-                    class="accordion__icon" 
-                />
-                {{ user.name }}
-            </div>
-            
-            <transition name="slide">
-                <div v-if="modelValue === user.id">
-                    <AlbumsComponent :userId="user.id" />
-                </div>
-            </transition>
+          <component 
+            :is="modelValue === user.id ? CloseAccordionComponent : OpenAccordionComponent" 
+            class="accordion__icon" 
+          />
+          {{ user.name }}
         </div>
-    </div>
+        
+        <transition name="slide">
+          <div v-if="modelValue === user.id">
+            <AlbumsComponent :userId="user.id" />
+          </div>
+        </transition>
+      </div>
+    </template>
+  </div>
 </template>
 
 <style scoped>

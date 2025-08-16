@@ -2,19 +2,24 @@
 import { ref, watch } from 'vue'
 import { fetchPhotos } from './api'
 import type { Photo } from './types'
+import LoaderComponent from '../UI/loader.component.vue' 
 
 const props = defineProps<{
   albumId: number
 }>()
 
 const photos = ref<Photo[]>([])
+const isLoading = ref(false) 
 
 watch(() => props.albumId, async (newAlbumId) => {
   if (newAlbumId) {
+    isLoading.value = true 
     try {
       photos.value = await fetchPhotos(newAlbumId)
     } catch (err) {
       console.error('Ошибка загрузки фотографий:', err)
+    } finally {
+      isLoading.value = false 
     }
   }
 }, { immediate: true })
@@ -22,20 +27,24 @@ watch(() => props.albumId, async (newAlbumId) => {
 
 <template>
   <div class="photos-grid">
-    <div 
-      v-for="photo in photos" 
-      :key="photo.id" 
-      class="photo-card"
-    >
-      <div class="photo-container">
-        <img 
-          :src="photo.thumbnailUrl" 
-          :alt="photo.title"
-          class="photo-thumbnail"
-        />
-        <p class="photo-title">{{ photo.title }}</p>
+    <LoaderComponent v-if="isLoading" height="320px"  />
+    
+    <template v-else>
+      <div 
+        v-for="photo in photos" 
+        :key="photo.id" 
+        class="photo-card"
+      >
+        <div class="photo-container">
+          <img 
+            :src="photo.thumbnailUrl" 
+            :alt="photo.title"
+            class="photo-thumbnail"
+          />
+          <p class="photo-title">{{ photo.title }}</p>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -115,4 +124,5 @@ watch(() => props.albumId, async (newAlbumId) => {
     max-width: 380px; 
   }
 }
+
 </style>
