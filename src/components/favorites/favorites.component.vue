@@ -25,18 +25,21 @@ const closeModal = () => {
     </div>
 
     <div v-else class="favorites-container">
-      <div 
-        v-for="photo in favoritesStore.favorites" 
-        :key="photo.id" 
-        class="favorite-item"
-      >
-        <PhotoCardComponent
-          :photo="photo"
-          :show-favorite="true"
-          :in-favorites="true"
-          @open-modal="openModal"
-        />
-      </div>
+      <TransitionGroup name="favorites">
+        <div 
+          v-for="photo in favoritesStore.favorites" 
+          :key="photo.id" 
+          class="favorite-item"
+        >
+          <PhotoCardComponent
+            :photo="photo"
+            :show-favorite="true"
+            :in-favorites="true"
+            @open-modal="openModal"
+            @removed=""
+          />
+        </div>
+      </TransitionGroup>
     </div>
 
     <ImageModalComponent 
@@ -77,6 +80,22 @@ const closeModal = () => {
 .favorite-item {
   width: 150px;
   margin-bottom: 42px; 
+}
+
+.favorites-move,
+.favorites-enter-active,
+.favorites-leave-active {
+  transition: all 0.5s ease;
+}
+
+.favorites-enter-from,
+.favorites-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.favorites-leave-active {
+  position: absolute;
 }
 
 @media (max-width: 700px) {

@@ -11,24 +11,38 @@ const props = defineProps<{
   inFavorites?: boolean
 }>()
 
-const emit = defineEmits(['open-modal'])
+const emit = defineEmits(['open-modal', 'removed'])
 
 const favoritesStore = useFavoritesStore()
 const isHovered = ref(false)
+const isRemoving = ref(false)
 
-const toggleFavorite = (e: Event) => {
+const toggleFavorite = async (e: Event) => {
   e.stopPropagation()
   e.preventDefault()
+  
+  if (favoritesStore.isFavorite(props.photo.id) && props.inFavorites) {
+    isRemoving.value = true
+    await new Promise(resolve => setTimeout(resolve, 500)) 
+    emit('removed')
+  }
+  
   favoritesStore.toggleFavorite(props.photo)
 }
 
 const handlePhotoClick = () => {
-  emit('open-modal', props.photo)
+  if (!isRemoving.value) {
+    emit('open-modal', props.photo)
+  }
 }
 </script>
 
 <template>
-  <div class="photo-card" @click="handlePhotoClick">
+  <div 
+    class="photo-card" 
+    @click="handlePhotoClick"
+    :class="{ 'removing': isRemoving }"
+  >
     <div 
       class="photo-container" 
       @mouseenter="isHovered = true" 
@@ -72,6 +86,31 @@ const handlePhotoClick = () => {
   align-items: center;
   cursor: pointer;
   width: 150px;
+  transition: all 0.3s ease;
+}
+
+.photo-card.removing {
+  animation: removeAnimation 0.5s ease forwards;
+}
+
+@keyframes removeAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+    height: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
 }
 
 .photo-container {
@@ -125,6 +164,7 @@ const handlePhotoClick = () => {
   padding: 8px 0 0 0;
   text-align: center;
   margin-bottom: 42px;
+  text-align: start;
 }
 
 .photo-container:hover .photo-title--hover {
