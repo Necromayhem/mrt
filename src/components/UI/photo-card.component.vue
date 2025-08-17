@@ -10,17 +10,29 @@ const props = defineProps<{
   showFavorite?: boolean
 }>()
 
+const emit = defineEmits(['open-modal'])
+
 const favoritesStore = useFavoritesStore()
 const isHovered = ref(false)
 
-const toggleFavorite = () => {
+const toggleFavorite = (e: Event) => {
+  e.stopPropagation()
+  e.preventDefault()
   favoritesStore.toggleFavorite(props.photo)
+}
+
+const handlePhotoClick = () => {
+  emit('open-modal', props.photo)
 }
 </script>
 
 <template>
-  <div class="photo-card">
-    <div class="photo-container" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  <div class="photo-card" @click="handlePhotoClick">
+    <div 
+      class="photo-container" 
+      @mouseenter="isHovered = true" 
+      @mouseleave="isHovered = false"
+    >
       <img
         :src="photo.thumbnailUrl"
         :alt="photo.title"
@@ -43,7 +55,6 @@ const toggleFavorite = () => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .photo-card {
   display: flex;

@@ -5,6 +5,7 @@ import type { Photo } from './types'
 import LoaderComponent from '@/components/UI/loader.component.vue'
 import PhotoCardComponent from '@/components/UI/photo-card.component.vue'
 import ErrorNotificationComponent from '@/components/UI/error-notification.component.vue'
+import ImageModalComponent from '@/components/UI/image-modal.component.vue'
 
 const props = defineProps<{
   albumId: number
@@ -13,6 +14,7 @@ const props = defineProps<{
 const photos = ref<Photo[]>([])
 const isLoading = ref(false)
 const hasError = ref(false)
+const selectedPhoto = ref<Photo | null>(null)
 
 watch(
   () => props.albumId,
@@ -32,6 +34,14 @@ watch(
   },
   { immediate: true },
 )
+
+const openModal = (photo: Photo) => {
+  selectedPhoto.value = photo
+}
+
+const closeModal = () => {
+  selectedPhoto.value = null
+}
 </script>
 
 <template>
@@ -45,9 +55,16 @@ watch(
         :key="photo.id"
         :photo="photo"
         :show-favorite="true"
+        @open-modal="openModal"
       />
     </template>
   </div>
+
+  <ImageModalComponent 
+    v-if="selectedPhoto"
+    :photo="selectedPhoto"
+    @close="closeModal"
+  />
 </template>
 
 <style scoped>
@@ -62,6 +79,7 @@ watch(
   display: grid;
   grid-template-columns: repeat(3, 150px);
   gap: 43px;
+  padding-top: 32px;
   justify-content: center;
 }
 

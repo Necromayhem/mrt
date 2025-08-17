@@ -1,9 +1,21 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useFavoritesStore } from '@/stores/favorites.store'
 import PhotoCardComponent from '@/components/UI/photo-card.component.vue'
-import FavoritesEmptyComponent from '../UI/favorites-empty.component.vue';
+import FavoritesEmptyComponent from '../UI/favorites-empty.component.vue'
+import ImageModalComponent from '@/components/UI/image-modal.component.vue'
+import type { Photo } from '@/components/catalog/photos/types'
 
 const favoritesStore = useFavoritesStore()
+const selectedPhoto = ref<Photo | null>(null)
+
+const openModal = (photo: Photo) => {
+  selectedPhoto.value = photo
+}
+
+const closeModal = () => {
+  selectedPhoto.value = null
+}
 </script>
 
 <template>
@@ -18,14 +30,22 @@ const favoritesStore = useFavoritesStore()
         :key="photo.id"
         :photo="photo"
         :show-favorite="true"
+        @open-modal="openModal"
       />
     </div>
+
+    <ImageModalComponent 
+      v-if="selectedPhoto"
+      :photo="selectedPhoto"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <style scoped>
 .favorites-view {
   padding: 20px;
+  padding-top: 56px;
 }
 
 .empty-message {
