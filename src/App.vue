@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import ContentMenuComponent from './components/content-menu/content-menu.component.vue';
 import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
+import CatalogViewComponent from './views/catalog-view.component.vue'
 </script>
 
 <template>
   <div class="app-container">
     <div class="content">
-    <NavMenuComponent />
-    <ContentMenuComponent />
-  </div>
+      <NavMenuComponent />
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; 
-    max-height: 100vh; 
-    overflow-y: auto;
-    padding-top: 64px; 
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding-top: 64px;
 }
 
 .content {

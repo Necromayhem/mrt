@@ -5,4 +5,3 @@
     <path d="M16 9L16 23" stroke="white" stroke-width="2" />
   </svg>
 </template>
-

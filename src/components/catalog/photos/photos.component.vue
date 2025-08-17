@@ -2,45 +2,41 @@
 import { ref, watch } from 'vue'
 import { fetchPhotos } from './api'
 import type { Photo } from './types'
-import LoaderComponent from '../UI/loader.component.vue' 
+import LoaderComponent from '@/components/UI/loader.component.vue'
 
 const props = defineProps<{
   albumId: number
 }>()
 
 const photos = ref<Photo[]>([])
-const isLoading = ref(false) 
+const isLoading = ref(false)
 
-watch(() => props.albumId, async (newAlbumId) => {
-  if (newAlbumId) {
-    isLoading.value = true 
-    try {
-      photos.value = await fetchPhotos(newAlbumId)
-    } catch (err) {
-      console.error('Ошибка загрузки фотографий:', err)
-    } finally {
-      isLoading.value = false 
+watch(
+  () => props.albumId,
+  async (newAlbumId) => {
+    if (newAlbumId) {
+      isLoading.value = true
+      try {
+        photos.value = await fetchPhotos(newAlbumId)
+      } catch (err) {
+        console.error('Ошибка загрузки фотографий:', err)
+      } finally {
+        isLoading.value = false
+      }
     }
-  }
-}, { immediate: true })
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <div class="photos-grid">
-    <LoaderComponent v-if="isLoading" height="320px"  />
-    
+    <LoaderComponent v-if="isLoading" height="320px" />
+
     <template v-else>
-      <div 
-        v-for="photo in photos" 
-        :key="photo.id" 
-        class="photo-card"
-      >
+      <div v-for="photo in photos" :key="photo.id" class="photo-card">
         <div class="photo-container">
-          <img 
-            :src="photo.thumbnailUrl" 
-            :alt="photo.title"
-            class="photo-thumbnail"
-          />
+          <img :src="photo.thumbnailUrl" :alt="photo.title" class="photo-thumbnail" />
           <p class="photo-title">{{ photo.title }}</p>
         </div>
       </div>
@@ -89,9 +85,9 @@ watch(() => props.albumId, async (newAlbumId) => {
 .photo-title {
   position: absolute;
   bottom: -30px;
-  left: 60px; 
+  left: 60px;
   right: 0;
-  background: rgba(0, 0, 0, .69);
+  background: rgba(0, 0, 0, 0.69);
   color: white;
   padding: 4px 8px;
   z-index: 1000;
@@ -102,12 +98,12 @@ watch(() => props.albumId, async (newAlbumId) => {
   opacity: 0;
   transition: opacity 0.2s;
   pointer-events: none;
-  width: 100%; 
+  width: 100%;
   max-width: 134px;
-  box-sizing: border-box; 
-  text-align: start; 
-  white-space: normal; 
-  word-wrap: break-word; 
+  box-sizing: border-box;
+  text-align: start;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .photo-container:hover .photo-title {
@@ -119,10 +115,9 @@ watch(() => props.albumId, async (newAlbumId) => {
     grid-template-columns: repeat(2, 150px);
     gap: 30px;
   }
-  
+
   .photos-container {
-    max-width: 380px; 
+    max-width: 380px;
   }
 }
-
 </style>

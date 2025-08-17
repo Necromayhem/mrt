@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <div class="loader-container" :style="{ height }">
-    <img src="/src/assets/loader.gif" alt="Loading..." class="loader" />
+    <img src="/src/assets/static/loader.gif" alt="Loading..." class="loader" />
   </div>
 </template>
 
