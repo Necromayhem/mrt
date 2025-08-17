@@ -2,11 +2,11 @@
 import { ref } from 'vue'
 import { fetchUsers } from './api'
 import type { Users } from './types'
-
 import AlbumsComponent from '../albums/albums.component.vue'
 import CloseAccordionComponent from '@/components/UI/close-accordion.component.vue'
 import OpenAccordionComponent from '@/components/UI/open-accordion.component.vue'
 import LoaderComponent from '@/components/UI/loader.component.vue'
+import ErrorNotificationComponent from '@/components/UI/error-notification.component.vue'
 
 const props = defineProps<{
   modelValue: number | null
@@ -15,12 +15,15 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue'])
 const users = ref<Users | null>(null)
 const isLoading = ref(true)
+const hasError = ref(false)
 
 fetchUsers()
   .then((data) => {
     users.value = data
   })
-  .catch(() => {})
+  .catch(() => {
+    hasError.value = true
+  })
   .finally(() => {
     isLoading.value = false
   })
@@ -33,6 +36,7 @@ function toggleUser(userId: number): void {
 <template>
   <div class="accordion">
     <LoaderComponent v-if="isLoading" height="888px" />
+    <ErrorNotificationComponent v-else-if="hasError" />
 
     <template v-else>
       <div v-for="user in users" :key="user.id" class="user-section">

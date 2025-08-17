@@ -6,6 +6,7 @@ import OpenAccordionComponent from '@/components/UI/open-accordion.component.vue
 import CloseAccordionComponent from '@/components/UI/close-accordion.component.vue'
 import LoaderComponent from '@/components/UI/loader.component.vue'
 import PhotosComponent from '../photos/photos.component.vue'
+import ErrorNotificationComponent from '@/components/UI/error-notification.component.vue'
 
 const props = defineProps<{
   userId: number
@@ -14,15 +15,23 @@ const props = defineProps<{
 const albums = ref<Albums | null>(null)
 const expandedAlbumId = ref<number | null>(null)
 const isLoading = ref(false)
+const hasError = ref(false)
+
+function toggleAlbum(albumId: number): void {
+  expandedAlbumId.value = expandedAlbumId.value === albumId ? null : albumId
+}
 
 watch(
   () => props.userId,
   (newUserId) => {
     if (newUserId) {
       isLoading.value = true
+      hasError.value = false
       fetchAlbums(newUserId)
         .then((data) => (albums.value = data))
-        .catch(() => {})
+        .catch(() => {
+          hasError.value = true
+        })
         .finally(() => {
           isLoading.value = false
         })
@@ -31,15 +40,12 @@ watch(
   },
   { immediate: true },
 )
-
-function toggleAlbum(albumId: number): void {
-  expandedAlbumId.value = expandedAlbumId.value === albumId ? null : albumId
-}
 </script>
 
 <template>
   <div class="albums-container">
     <LoaderComponent v-if="isLoading" height="320px" />
+    <ErrorNotificationComponent v-else-if="hasError" />
 
     <template v-else>
       <div v-for="album in albums" :key="album.id" class="album-section">

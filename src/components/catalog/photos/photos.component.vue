@@ -4,6 +4,7 @@ import { fetchPhotos } from './api'
 import type { Photo } from './types'
 import LoaderComponent from '@/components/UI/loader.component.vue'
 import PhotoCardComponent from '@/components/UI/photo-card.component.vue'
+import ErrorNotificationComponent from '@/components/UI/error-notification.component.vue'
 
 const props = defineProps<{
   albumId: number
@@ -11,16 +12,19 @@ const props = defineProps<{
 
 const photos = ref<Photo[]>([])
 const isLoading = ref(false)
+const hasError = ref(false)
 
 watch(
   () => props.albumId,
   async (newAlbumId) => {
     if (newAlbumId) {
       isLoading.value = true
+      hasError.value = false
       try {
         photos.value = await fetchPhotos(newAlbumId)
       } catch (err) {
         console.error('Ошибка загрузки фотографий:', err)
+        hasError.value = true
       } finally {
         isLoading.value = false
       }
@@ -33,6 +37,7 @@ watch(
 <template>
   <div class="photos-grid">
     <LoaderComponent v-if="isLoading" height="320px" />
+    <ErrorNotificationComponent v-else-if="hasError" />
 
     <template v-else>
       <PhotoCardComponent
