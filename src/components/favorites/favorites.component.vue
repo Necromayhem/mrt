@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useFavoritesStore } from '@/stores/favorites.store'
 import PhotoCardComponent from '@/components/UI/photo-card.component.vue'
+import FavoritesEmptyComponent from '../UI/favorites-empty.component.vue';
 
 const favoritesStore = useFavoritesStore()
 </script>
@@ -8,7 +9,7 @@ const favoritesStore = useFavoritesStore()
 <template>
   <div class="favorites-view">
     <div v-if="favoritesStore.favorites.length === 0" class="empty-message">
-      Нет избранных фотографий
+      <FavoritesEmptyComponent />
     </div>
 
     <div v-else class="favorites-grid">

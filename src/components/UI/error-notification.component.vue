@@ -20,7 +20,7 @@
 }
 
 .error-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   margin-bottom: 8px;
   color: #1c1c1c;

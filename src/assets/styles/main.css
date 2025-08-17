@@ -1,15 +1,15 @@
 @import './base.css';
 
 * {
-    font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
+  user-select: none;
 }
 
-
 ::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 html {
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
