@@ -8,6 +8,7 @@ import { ref } from 'vue'
 const props = defineProps<{
   photo: Photo
   showFavorite?: boolean
+  inFavorites?: boolean
 }>()
 
 const emit = defineEmits(['open-modal'])
@@ -37,7 +38,7 @@ const handlePhotoClick = () => {
         :src="photo.thumbnailUrl"
         :alt="photo.title"
         class="photo-thumbnail"
-        :class="{ 'photo-zoomed': isHovered }"
+        :class="{ 'photo-zoomed': isHovered && !inFavorites }"
       />
 
       <div
@@ -51,25 +52,37 @@ const handlePhotoClick = () => {
         <StarEmptyComponent v-else />
       </div>
 
-      <p class="photo-title">{{ photo.title }}</p>
+      <p 
+        class="photo-title"
+        :class="{
+          'photo-title--hover': !inFavorites,
+          'photo-title--static': inFavorites
+        }"
+      >
+        {{ photo.title }}
+      </p>
     </div>
   </div>
 </template>
+
 <style scoped>
 .photo-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  width: 150px;
 }
 
 .photo-container {
   position: relative;
+  width: 150px;
+  height: 150px;
 }
 
 .photo-thumbnail {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 4px;
   transition: transform 0.2s;
@@ -82,7 +95,7 @@ const handlePhotoClick = () => {
 .photo-title {
   position: absolute;
   bottom: -30px;
-  left: 60px;
+  left: 0;
   right: 0;
   background: rgba(0, 0, 0, 0.69);
   color: white;
@@ -92,18 +105,29 @@ const handlePhotoClick = () => {
   margin: 0;
   font-size: 12px;
   line-height: 1.3;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
   width: 100%;
-  max-width: 134px;
   box-sizing: border-box;
   text-align: start;
   white-space: normal;
   word-wrap: break-word;
 }
 
-.photo-container:hover .photo-title {
+.photo-title--hover {
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.photo-title--static {
+  position: static;
+  color: #333;
+  background: transparent;
+  padding: 8px 0 0 0;
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.photo-container:hover .photo-title--hover {
   opacity: 1;
 }
 

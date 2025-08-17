@@ -45,11 +45,13 @@ const closeModal = () => {
 </script>
 
 <template>
-  <div class="photos-grid">
-    <LoaderComponent v-if="isLoading" height="320px" />
-    <ErrorNotificationComponent v-else-if="hasError" />
+  <div class="photos-container">
+    <div v-if="isLoading || hasError" class="loader-error-container">
+      <LoaderComponent v-if="isLoading" height="320px" />
+      <ErrorNotificationComponent v-else-if="hasError" />
+    </div>
 
-    <template v-else>
+    <div v-else class="photos-grid">
       <PhotoCardComponent
         v-for="photo in photos"
         :key="photo.id"
@@ -57,14 +59,10 @@ const closeModal = () => {
         :show-favorite="true"
         @open-modal="openModal"
       />
-    </template>
+    </div>
   </div>
 
-  <ImageModalComponent 
-    v-if="selectedPhoto"
-    :photo="selectedPhoto"
-    @close="closeModal"
-  />
+  <ImageModalComponent v-if="selectedPhoto" :photo="selectedPhoto" @close="closeModal" />
 </template>
 
 <style scoped>
@@ -73,6 +71,9 @@ const closeModal = () => {
   max-width: 534px;
   margin: 0 auto;
   padding: 16px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .photos-grid {
@@ -81,6 +82,14 @@ const closeModal = () => {
   gap: 43px;
   padding-top: 32px;
   justify-content: center;
+}
+
+.loader-error-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
 }
 
 @media (max-width: 700px) {

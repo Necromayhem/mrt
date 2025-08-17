@@ -9,7 +9,7 @@
 </template>
 
 <style scoped>
-favorites-notification {
+.favorites-notification {
   display: flex;
   flex-direction: column;
   align-items: center;

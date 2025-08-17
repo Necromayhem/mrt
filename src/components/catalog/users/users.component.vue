@@ -65,7 +65,15 @@ function toggleUser(userId: number): void {
 <style scoped>
 .accordion {
   height: 100%;
-  scroll-behavior: smooth;
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.user-section {
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
 }
 
 .accordion__user {

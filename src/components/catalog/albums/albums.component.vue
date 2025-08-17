@@ -72,6 +72,18 @@ watch(
 </template>
 
 <style scoped>
+.albums-container {
+  min-height: 100%;
+  display: flex; 
+  flex-direction: column; 
+}
+
+.album-section {
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+}
+
 .accordion__album {
   display: flex;
   align-items: center;
