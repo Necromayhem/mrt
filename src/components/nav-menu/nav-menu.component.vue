@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const activeButton = ref('catalog')
+const route = useRoute()
+const activeButton = ref(route.name as string)
 
-function setActive(buttonName: string) {
-  activeButton.value = buttonName
-}
+watch(
+  () => route.name,
+  (newName) => {
+    activeButton.value = newName as string
+  },
+)
 </script>
 
 <template>
@@ -14,7 +19,6 @@ function setActive(buttonName: string) {
       to="/catalog"
       class="actions-panel__button actions-panel__button--catalog"
       :class="{ active: activeButton === 'catalog' }"
-      @click="activeButton = 'catalog'"
     >
       Каталог
     </router-link>
@@ -22,7 +26,6 @@ function setActive(buttonName: string) {
       to="/favorites"
       class="actions-panel__button actions-panel__button--favorites"
       :class="{ active: activeButton === 'favorites' }"
-      @click="activeButton = 'favorites'"
     >
       Избранное
     </router-link>

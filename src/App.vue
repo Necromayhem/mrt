@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import NavMenuComponent from './components/nav-menu/nav-menu.component.vue'
-import CatalogViewComponent from './views/catalog-view.component.vue'
 </script>
 
 <template>
